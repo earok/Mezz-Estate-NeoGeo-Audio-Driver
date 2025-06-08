@@ -194,7 +194,8 @@ UCOM_command_vectors:
     dw UCOM_CMD_set_master_vol,    UCOM_CMD_set_master_vol
     dw UCOM_CMD_set_fade,          UCOM_CMD_set_fade
     dw UCOM_CMD_invalid,           UCOM_CMD_sfxps_retrig_smp
-    dup 116
+    dw UCOM_CMD_adpcmb_play,       UCOM_CMD_adpcmb_stop
+    dup 114
         dw UCOM_CMD_invalid
     edup
 
@@ -304,6 +305,17 @@ UCOM_CMD_sfxps_retrig_smp:
     pop af
     pop iy
     pop bc
+    jp UCOM_run_command_return
+
+; b: %0SSSSSSS
+; c: $0C
+UCOM_CMD_adpcmb_play:
+    call ADPCMB_PlaySample
+    jp UCOM_run_command_return
+
+; c: $0D
+UCOM_CMD_adpcmb_stop:
+    call pb_stop
     jp UCOM_run_command_return
 
 UCOM_CMD_invalid:

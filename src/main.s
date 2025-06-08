@@ -14,7 +14,7 @@
 #data WRAM,$F800,$800
 	include "wram.s"
 
-#code DRIVER_CODE,$0000,$6000
+#code DRIVER_CODE,$0000,CODESIZE
 	;org $0000
 j_startup:
 	di
@@ -392,3 +392,7 @@ softlock:
 	include "sfxps.s"
 	include "macro.s"
 	include "fade.s"
+
+	;ADMPCM-B add on
+	include "adpcm_b.s"
+	

@@ -1,5 +1,7 @@
 # Mezz'Estate Neogeo Audio Driver
 
+## (Hack by Earok to patch in limited support for ADPCM-B)
+
 An audio driver for the NeoGeo MVS and AES written in assembly.<br/>
 Check [the wiki](https://github.com/stereomimi/Mezz-Estate-NeoGeo-Audio-Driver/wiki) for further information
 
@@ -15,7 +17,7 @@ Check [the wiki](https://github.com/stereomimi/Mezz-Estate-NeoGeo-Audio-Driver/w
 ## Z80 memory map
 Address space | Description           | Usage
 --------------|-----------------------|--------------------------
-$0000 ~ $5FFF | Static main code bank | Code
-$6000 ~ $7FFF | Static main code bank | MLM header and song data
+$0000 ~ $60FF | Static main code bank | Code (Earok - additional 256 bytes reserved for code)
+$6100 ~ $7FFF | Static main code bank | MLM header and song data
 $8000 ~ $F7FF | Switchable banks      | Song data
 $F800 ~ $FFFF | Work RAM              | Work RAM
