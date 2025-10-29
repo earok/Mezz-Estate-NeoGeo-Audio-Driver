@@ -1,7 +1,6 @@
 ; b: source lookup (smp start LSB; smp start MSB; smp end LSB; smp start MSB; deltaN LSB; deltaN MSB)
 ADPCMB_PlaySample:
 
-    ;Don't know if we need to push all of these but to be safe..
     push af
     push bc
     push hl
@@ -15,14 +14,6 @@ ADPCMB_PlaySample:
 		rst RST_YM_WRITEA
         ld  de,$1000
 		rst RST_YM_WRITEA
-
-        ;Left right
-        ld  de,$11c0
-		rst RST_YM_WRITEA
-
-        ;Volume max
-        ld  de,$1bff
-		rst RST_YM_WRITEA   
 
         ;get sample address into ix
         ; Index SFX ADPCM-A list
@@ -62,7 +53,7 @@ ADPCMB_PlaySample:
         ld e,(ix+3)
         rst RST_YM_WRITEA
 
-        ;DeltaN uses half of another slot, so always remember to use two slots every PCMB
+        ;DeltaN + volume + left/right + control bits uses half of another slot, so always remember to use two slots every PCMB
         ld d,REG_PB_FREQL
         ld e,(ix+4)
         rst RST_YM_WRITEA
@@ -72,8 +63,24 @@ ADPCMB_PlaySample:
         ld e,(ix+5)
         rst RST_YM_WRITEA
 
-        ;Kick off looped playback (assuming we're using PCMB for music of course)
-		ld de,$1090
+        ;Volume (ff max)  
+        ld d,REG_PB_VOL
+        ld e,(ix+6)
+        rst RST_YM_WRITEA   
+
+        ;left/right uses ix+7 bits 6/7
+        ld d,REG_PB_LRSEL
+        ld a,(ix+7)
+        and a,$c0 ;Only keep bits 6 and 7
+        ld e,a        
+		rst RST_YM_WRITEA
+
+        ;if ix+7 has bit 4 set, it'll loop
+		ld d,REG_PB_CTRL
+        ld a,(ix+7)
+        and a,$10 ;Only keep repeat bit
+        or a,$80 ;Make sure start bit is set
+        ld e,a
 		rst RST_YM_WRITEA
 
     pop ix
